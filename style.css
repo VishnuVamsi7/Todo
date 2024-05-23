@@ -26,6 +26,12 @@ body {
     cursor: pointer;
 }
 
+.filters button {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
 #taskList {
     list-style: none;
     padding: 0;
@@ -41,7 +47,17 @@ body {
     align-items: center;
 }
 
+.completed {
+    text-decoration: line-through;
+}
+
 .deleteBtn {
     cursor: pointer;
     color: red;
+}
+
+.editBtn {
+    cursor: pointer;
+    color: blue;
+    margin-right: 10px;
 }
