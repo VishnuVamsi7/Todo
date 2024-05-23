@@ -4,6 +4,7 @@ document.getElementById('addTaskBtn').addEventListener('click', addTask);
 document.getElementById('allBtn').addEventListener('click', () => filterTasks('all'));
 document.getElementById('completedBtn').addEventListener('click', () => filterTasks('completed'));
 document.getElementById('incompleteBtn').addEventListener('click', () => filterTasks('incomplete'));
+document.getElementById('removedBtn').addEventListener('click', () => filterTasks('removed'));
 
 function addTask() {
     const taskInput = document.getElementById('taskInput');
@@ -16,6 +17,7 @@ function addTask() {
         li.innerHTML = `
             <span>${task}</span>
             <div>
+                <span class="completeBtn">&#10003;</span>
                 <span class="editBtn">Edit</span>
                 <span class="deleteBtn">X</span>
             </div>
@@ -35,7 +37,7 @@ function addTask() {
             }
         });
 
-        li.firstElementChild.addEventListener('click', function() {
+        li.querySelector('.completeBtn').addEventListener('click', function() {
             li.classList.toggle('completed');
             saveTasksToLocalStorage();
         });
@@ -58,6 +60,9 @@ function filterTasks(filter) {
             case 'incomplete':
                 task.style.display = task.classList.contains('completed') ? 'none' : 'flex';
                 break;
+            case 'removed':
+                task.style.display = task.dataset.removed === 'true' ? 'flex' : 'none';
+                break;
         }
     });
 }
@@ -67,7 +72,8 @@ function saveTasksToLocalStorage() {
     document.querySelectorAll('#taskList li').forEach(task => {
         tasks.push({
             text: task.firstElementChild.textContent,
-            completed: task.classList.contains('completed')
+            completed: task.classList.contains('completed'),
+            removed: task.dataset.removed === 'true'
         });
     });
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -82,6 +88,7 @@ function loadTasksFromLocalStorage() {
         li.innerHTML = `
             <span>${task.text}</span>
             <div>
+                <span class="completeBtn">&#10003;</span>
                 <span class="editBtn">Edit</span>
                 <span class="deleteBtn">X</span>
             </div>
@@ -89,10 +96,15 @@ function loadTasksFromLocalStorage() {
         if (task.completed) {
             li.classList.add('completed');
         }
+        if (task.removed) {
+            li.dataset.removed = 'true';
+            li.style.display = 'none';
+        }
         taskList.appendChild(li);
 
         li.querySelector('.deleteBtn').addEventListener('click', function() {
-            li.remove();
+            li.dataset.removed = 'true';
+            li.style.display = 'none';
             saveTasksToLocalStorage();
         });
 
@@ -104,7 +116,7 @@ function loadTasksFromLocalStorage() {
             }
         });
 
-        li.firstElementChild.addEventListener('click', function() {
+        li.querySelector('.completeBtn').addEventListener('click', function() {
             li.classList.toggle('completed');
             saveTasksToLocalStorage();
         });
